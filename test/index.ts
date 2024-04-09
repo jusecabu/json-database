@@ -1,12 +1,27 @@
 import { assert } from '@std/assert';
-import { createDatabase } from '../src/functions/utils.ts';
+import { createDatabase, createTable } from '@functions';
 
-Deno.test('Database JSON file is created', async (): Promise<void> => {
-    await createDatabase('test');
+const databaseName = 'test';
+const filepath = 'test/main.database.json';
+const tableName = 'users';
 
-    const data = await Deno.readTextFile('test/index.database.json');
+Deno.test('Check if JSON file is created', async (): Promise<void> => {
+    await createDatabase(databaseName);
 
-    await Deno.remove('test/index.database.json');
+    const data = await Deno.readTextFile(filepath);
+
+    await Deno.remove(filepath);
 
     assert(data.includes('{}'));
+});
+
+Deno.test('Check is table in JSON file is created', async (): Promise<void> => {
+    await createDatabase(databaseName);
+    await createTable(filepath, tableName);
+
+    const data = await Deno.readTextFile(filepath);
+
+    await Deno.remove(filepath);
+
+    assert(data.includes(`"${tableName}": []`));
 });

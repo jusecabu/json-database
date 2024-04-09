@@ -1,8 +1,11 @@
-export type TableItem = {
-    id: string;
-    [x: string]: unknown;
-};
+import { Item } from '@classes';
+
+import type { TableItem } from '@types';
 
 export class Table<Type extends TableItem> {
-    constructor() {}
+    constructor(private readonly path: string, private readonly name: string) {}
+
+    async get(): Promise<Item> {
+        return new Item();
+    }
 }

@@ -1,14 +1,28 @@
-import { Table, type TableItem } from './table.ts';
-import { createDatabase } from '../functions/utils.ts';
+import { Table } from '@classes';
+import { createDatabase, createTable } from '@functions';
 
-export class Database {
-    constructor(private readonly path: string, private readonly name: string) {}
+import type { TableItem } from '@types';
 
-    async table<Type extends TableItem>(): Promise<Table<Type>> {
-        const { path, name } = this;
+class Database {
+    constructor(
+        private readonly filepath: string,
+    ) {}
 
-        await createDatabase(path, name);
+    async table<Type extends TableItem>(
+        name: string,
+    ): Promise<Table<Type>> {
+        const { filepath } = this;
 
-        return new Table<Type>();
+        await createTable(filepath, name);
+
+        return new Table<Type>(filepath, name);
+    }
+}
+
+export class File {
+    static async init(path: string, filename?: string): Promise<Database> {
+        const filepath = await createDatabase(path, filename);
+
+        return new Database(filepath);
     }
 }
